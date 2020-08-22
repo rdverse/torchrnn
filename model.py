@@ -33,9 +33,9 @@ class Net(nn.Module):
 
             out = self.rnn1(feature)
             print(out)
-            out = F.relu(self.fc1(h))
-            out = F.relu(self.fc2(h))
-            out = self.softmax(self.fc3(h))
+            out = F.relu(self.fc1(out))
+            out = F.relu(self.fc2(out))
+            out = self.softmax(self.fc3(out))
         #out = self.softmax(out)
         #     x = F.relu(self.fc1(x))
         #    x = F.relu(self.fc2(x))
