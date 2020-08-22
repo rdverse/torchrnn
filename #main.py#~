@@ -1,0 +1,6 @@
+import Data
+
+
+if __name__=='__main__':
+    data = Data()
+    featuresTrain, featuresTest, labelsTrain, lablesTest = data.getData
