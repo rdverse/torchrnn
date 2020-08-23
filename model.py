@@ -28,5 +28,5 @@ class Net(nn.Module):
         out = self.fc1(out)
         out = self.fc2(out)
         out = self.fc3(out)
-        out = F.softmax(out)
+        out = F.softmax(out, dim=2)
         return out
