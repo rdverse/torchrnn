@@ -10,34 +10,30 @@ import torch.nn.functional as F
 
 
 class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__(
-            input_size,
-            hidden_size,
-        )
-        self.rnn1 = nn.RNN(input_size=512, hidden_size=512, num_layers=2)
-        self.fc1 = nn.Linear(512, 120)
+    def __init__(self, input_size, hidden_size, num_layers, num_classes,
+                 sequence_length):
+        super(Net, self).__init__()
+
+        self.hidden_size = hidden_size
+        self.input_size = input_size
+        self.num_layers = num_layers
+
+        self.rnn1 = nn.RNN(input_size=input_size,
+                           hidden_size=hidden_size,
+                           num_layers=2)
+
+        self.fc1 = nn.Linear(1792, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 2)
-        self.softmax = nn.Softmax(dim=2)
 
     def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(1), self.hidden_size)
+        #        print(h0)
+        out, _ = self.rnn1(x, h0)
+        #        print("Output Shape in model is : %" % out.shape())
+        out = F.relu(self.fc1(out))
+        out = F.relu(self.fc2(out))
+        out = F.softmax(self.fc3(out))
+        out = out.reshape(out.shape[0], -1)
 
-        #print(x.size())
-        #h = torch.zeros(x.size()[1], 512)
-        #for i in range(x.size()):
-        #   h = self.rnn1(x[i, :], h)
-        for feature in x:
-            feature = feature.reshape(-1, 1)
-            print(feature)
-
-            out = self.rnn1(feature)
-            print(out)
-            out = F.relu(self.fc1(out))
-            out = F.relu(self.fc2(out))
-            out = self.softmax(self.fc3(out))
-        #out = self.softmax(out)
-        #     x = F.relu(self.fc1(x))
-        #    x = F.relu(self.fc2(x))
-        #   x = self.fc3(x)
-        return x
+        return out
