@@ -23,14 +23,10 @@ class Net(nn.Module):
         self.fc3 = nn.Linear(84, 1)
 
     def forward(self, x):
-        print('size of x in the forward pass {} '.format(x.shape))
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
-        #        print(h0)
         out, _ = self.rnn1(x, h0)
-        #        print("Output Shape in model is : %" % out.shape())
         out = self.fc1(out)
         out = self.fc2(out)
         out = self.fc3(out)
-        out = F.softmax(out, dim=0)
-        # out = out.reshape(out.shape[0], -1)
+        out = F.softmax(out)
         return out
