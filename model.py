@@ -20,11 +20,11 @@ class Net(nn.Module):
 
         self.rnn1 = nn.RNN(input_size=input_size,
                            hidden_size=hidden_size,
-                           num_layers=2)
+                           num_layers=1)
 
-        self.fc1 = nn.Linear(1792, 120)
+        self.fc1 = nn.Linear(512, 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 2)
+        self.fc3 = nn.Linear(84, 1)
 
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(1), self.hidden_size)
@@ -34,6 +34,6 @@ class Net(nn.Module):
         out = F.relu(self.fc1(out))
         out = F.relu(self.fc2(out))
         out = F.softmax(self.fc3(out))
-        out = out.reshape(out.shape[0], -1)
-
+        print('shape of output is {}'.format(out.size()))
+        # out = out.reshape(out.shape[0], -1)
         return out

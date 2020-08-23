@@ -11,16 +11,19 @@ if __name__ == '__main__':
         torch.from_numpy(item) for item in data.getData()
     ]
     print(featuresTrain.shape)
-    net = Net(input_size=28,
-              hidden_size=256,
-              num_layers=2,
+    net = Net(input_size=512,
+              hidden_size=512,
+              num_layers=1,
               num_classes=2,
-              sequence_length=28)
+              sequence_length=1)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     # Pytorch train and test sets
+    labelsTrain = labelsTrain.reshape(-1, 1)
+    labelsTest = labelsTest.reshape(-1, 1)
+
     train = TensorDataset(featuresTrain, labelsTrain)
     test = TensorDataset(featuresTest, labelsTest)
 
@@ -28,7 +31,7 @@ if __name__ == '__main__':
     batch_size = 64
     trainloader = DataLoader(train, batch_size=batch_size, shuffle=False)
     testloader = DataLoader(test, batch_size=batch_size, shuffle=False)
-    for epoch in range(200):  # loop over the dataset multiple times
+    for epoch in range(2):  # loop over the dataset multiple times
 
         running_loss = 0.0
 
