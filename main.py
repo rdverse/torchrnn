@@ -17,7 +17,7 @@ if __name__ == '__main__':
               num_classes=2,
               sequence_length=1)
 
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     # Pytorch train and test sets
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
             # forward + backward + optimize
             outputs = net(inputs)
-            loss = criterion(outputs, labels)
+            loss = criterion(outputs, labels.to(dtype=torch.float))
             loss.backward()
             optimizer.step()
 

@@ -1,10 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.autograd as Variable
-from torch.utils.data import DataLoader, TensorDataset
-import torch.nn as nn
-
-import torch.optim as optim
 
 import torch.nn.functional as F
 
@@ -20,20 +15,22 @@ class Net(nn.Module):
 
         self.rnn1 = nn.RNN(input_size=input_size,
                            hidden_size=hidden_size,
-                           num_layers=1)
+                           num_layers=num_layers,
+                           batch_first=True)
 
         self.fc1 = nn.Linear(512, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 1)
 
     def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(1), self.hidden_size)
+        print('size of x in the forward pass {} '.format(x.shape))
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
         #        print(h0)
         out, _ = self.rnn1(x, h0)
         #        print("Output Shape in model is : %" % out.shape())
-        out = F.relu(self.fc1(out))
-        out = F.relu(self.fc2(out))
-        out = F.softmax(self.fc3(out))
-        print('shape of output is {}'.format(out.size()))
+        out = self.fc1(out)
+        out = self.fc2(out)
+        out = self.fc3(out)
+        out = F.softmax(out, dim=0)
         # out = out.reshape(out.shape[0], -1)
         return out

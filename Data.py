@@ -14,7 +14,7 @@ class Data():
             return (data.astype(np.float32))
         elif type == 'labels':
             data = np.random.randint(2, size=self.dataSize)
-            return (data.astype(np.int))
+            return (data.astype(np.float))
 
     def getData(self):
         X_train, X_test, y_train, y_test = train_test_split(self.features,
