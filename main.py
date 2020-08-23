@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
+from testModel import Classifier
 
 if __name__ == '__main__':
     data = Data()
@@ -14,8 +15,8 @@ if __name__ == '__main__':
     net = Net(input_size=512,
               hidden_size=512,
               num_layers=1,
-              num_classes=2,
-              sequence_length=1)
+              num_classes=3,
+              sequence_length=512)
 
     criterion = nn.BCELoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -28,7 +29,7 @@ if __name__ == '__main__':
     test = TensorDataset(featuresTest, labelsTest)
 
     # data loader
-    batch_size = 64
+    batch_size = 100
     trainloader = DataLoader(train, batch_size=batch_size, shuffle=False)
     testloader = DataLoader(test, batch_size=batch_size, shuffle=False)
     for epoch in range(20):  # loop over the dataset multiple times
@@ -40,7 +41,7 @@ if __name__ == '__main__':
             inputs, labels = data
 
             # zero the parameter gradients
-            optimizer.zero_grad()
+            #optimizer.zero_grad()
 
             # forward + backward + optimize
             outputs = net(inputs)
@@ -57,7 +58,7 @@ if __name__ == '__main__':
 
     print('Finished Training')
 
-    ## Test the accuracy
+    #Test the accuracy
     correct = 0
     total = 0
     with torch.no_grad():
@@ -67,6 +68,6 @@ if __name__ == '__main__':
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
-
-    print('Accuracy of the network on the 10000 random features is: %d %%' %
-          (100 * correct / total))
+            print(predicted)
+    print('Accuracy of the network is: %d %%' % (100 * correct / total))
+    Classifier(featuresTrain, featuresTest, labelsTrain, labelsTest)

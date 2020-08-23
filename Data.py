@@ -10,16 +10,22 @@ class Data():
 
     def _generate_data(self, type):
         if type == 'features':
-            data = np.random.randint(-10, 10, (self.dataSize, 512))
+            #data = np.random.randint(-10, 10, (self.dataSize, 512))
+            a = np.random.normal(5, 5, (5000, 512))
+            b = np.random.normal(10, 5, (5000, 512))
+            data = np.vstack((a, b))
             return (data.astype(np.float32))
         elif type == 'labels':
-            data = np.random.randint(2, size=self.dataSize)
+            a = np.zeros(5000)
+            b = np.ones(5000)
+            data = np.append(a, b)
             return (data.astype(np.float))
 
     def getData(self):
         X_train, X_test, y_train, y_test = train_test_split(self.features,
                                                             self.labels,
                                                             test_size=0.2,
+                                                            shuffle=True,
                                                             random_state=42)
         X_train = np.array([x.reshape(1, len(x)) for x in X_train])
         X_test = np.array([x.reshape(1, len(x)) for x in X_test])
