@@ -6,7 +6,6 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
 from testModel import Classifier
-import pandas as pd
 
 
 def check_accuracy(testloader):
