@@ -13,6 +13,8 @@ if __name__ == '__main__':
         torch.from_numpy(item) for item in data.getData()
     ]
 
+    EPOCHS = 3
+
     net = Net(input_size=512,
               hidden_size=512,
               num_layers=1,
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     batch_size = 100
     trainloader = DataLoader(train, batch_size=batch_size, shuffle=False)
     testloader = DataLoader(test, batch_size=batch_size, shuffle=False)
-    for epoch in range(10):  # loop over the dataset multiple times
+    for epoch in range(EPOCHS):  # loop over the dataset multiple times
 
         running_loss = 0.0
 

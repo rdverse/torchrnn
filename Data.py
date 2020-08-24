@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 class Data():
     def __init__(self):
         self.dataSize = 10000
-        self.mean = [7, 10]
+        self.mean = [10, 3]
         self.std = [3.5, 6]
         self.print_stats()
         self.features = self.generate_data('features')
