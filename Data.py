@@ -10,11 +10,11 @@ class Data():
 
     def _generate_data(self, type):
         if type == 'features':
-            #data = np.random.randint(-10, 10, (self.dataSize, 512))
             a = np.random.normal(5, 5, (5000, 512))
             b = np.random.normal(10, 5, (5000, 512))
             data = np.vstack((a, b))
             return (data.astype(np.float32))
+
         elif type == 'labels':
             a = np.zeros(5000)
             b = np.ones(5000)
@@ -29,5 +29,4 @@ class Data():
                                                             random_state=42)
         X_train = np.array([x.reshape(1, len(x)) for x in X_train])
         X_test = np.array([x.reshape(1, len(x)) for x in X_test])
-        print(X_train.shape)
         return (X_train, X_test, y_train, y_test)

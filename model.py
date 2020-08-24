@@ -25,8 +25,8 @@ class Net(nn.Module):
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
         out, _ = self.rnn1(x, h0)
-        out = self.fc1(out)
-        out = self.fc2(out)
+        out = torch.reshape(out, (out.shape[0], -1))
+        out = F.relu(self.fc1(out))
+        out = F.relu(self.fc2(out))
         out = self.fc3(out)
-        out = F.softmax(out, dim=2)
         return out

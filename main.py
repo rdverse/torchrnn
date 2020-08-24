@@ -1,6 +1,7 @@
+import numpy as np
 from Data import Data
-from model import Net
 import torch
+from model import Net
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
@@ -11,14 +12,14 @@ if __name__ == '__main__':
     featuresTrain, featuresTest, labelsTrain, labelsTest = [
         torch.from_numpy(item) for item in data.getData()
     ]
-    print(featuresTrain.shape)
+
     net = Net(input_size=512,
               hidden_size=512,
               num_layers=1,
-              num_classes=3,
+              num_classes=2,
               sequence_length=512)
 
-    criterion = nn.BCELoss()
+    criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     # Pytorch train and test sets
@@ -29,10 +30,10 @@ if __name__ == '__main__':
     test = TensorDataset(featuresTest, labelsTest)
 
     # data loader
-    batch_size = 2000
+    batch_size = 100
     trainloader = DataLoader(train, batch_size=batch_size, shuffle=False)
     testloader = DataLoader(test, batch_size=batch_size, shuffle=False)
-    for epoch in range(20):  # loop over the dataset multiple times
+    for epoch in range(5):  # loop over the dataset multiple times
 
         running_loss = 0.0
 
@@ -45,15 +46,18 @@ if __name__ == '__main__':
 
             # forward + backward + optimize
             outputs = net(inputs)
-            loss = criterion(outputs, labels.to(dtype=torch.float))
+            # print(labels.to(dtype=torch.float).shape)
+            loss = criterion(
+                outputs,
+                labels.to(dtype=torch.float).reshape((batch_size, 1)))
             loss.backward()
             optimizer.step()
 
             # print statistics
             running_loss += loss.item()
-            if i % 2000 == 1999:  # print every 2000 mini-batches
+            if i % 2 == 0:  # print every 2000 mini-batches
                 print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 2000))
+                      (epoch + 1, i + 1, running_loss / 2))
                 running_loss = 0.0
 
     print('Finished Training')
@@ -63,11 +67,19 @@ if __name__ == '__main__':
     total = 0
     with torch.no_grad():
         for data in testloader:
-            features, labels = data
-            outputs = net(features)
-            _, predicted = torch.max(outputs.data, 1)
+            feat, lab = data
+
+            outputs = net(feat)
+
             total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+
+            predicted = np.array(
+                [1 if x > 0 else 0 for x in outputs.flatten()])
+
+            predicted = torch.tensor(predicted).to(dtype=torch.float64)
+
+            # Convert the predicted outputs to
+            correct += (predicted == lab.flatten()).sum().item()
 
     print('Accuracy of the network is: %d %%' % (100 * correct / total))
 
