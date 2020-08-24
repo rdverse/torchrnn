@@ -28,5 +28,6 @@ class Net(nn.Module):
         out = torch.reshape(out, (out.shape[0], -1))
         out = F.relu(self.fc1(out))
         out = F.relu(self.fc2(out))
+        # BCE with logits combines a sigmoid layer for the output node
         out = self.fc3(out)
         return out

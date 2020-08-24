@@ -11,7 +11,7 @@ class Classifier():
         self.build_classifier()
 
     def build_classifier(self):
-        clf = svm.SVC()
+        clf = svm.SVC(max_iter=-1)
         classifier = clf.fit(self.X_Train, self.y_Train)
         preds = classifier.predict(self.X_Test)
         print(classification_report(preds, self.y_test))

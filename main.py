@@ -19,6 +19,7 @@ if __name__ == '__main__':
               num_classes=2,
               sequence_length=512)
 
+    # Loss function for binary classification
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -33,11 +34,12 @@ if __name__ == '__main__':
     batch_size = 100
     trainloader = DataLoader(train, batch_size=batch_size, shuffle=False)
     testloader = DataLoader(test, batch_size=batch_size, shuffle=False)
-    for epoch in range(5):  # loop over the dataset multiple times
+    for epoch in range(10):  # loop over the dataset multiple times
 
         running_loss = 0.0
 
         for i, data in enumerate(trainloader):
+
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data
 
@@ -46,7 +48,6 @@ if __name__ == '__main__':
 
             # forward + backward + optimize
             outputs = net(inputs)
-            # print(labels.to(dtype=torch.float).shape)
             loss = criterion(
                 outputs,
                 labels.to(dtype=torch.float).reshape((batch_size, 1)))
@@ -55,9 +56,9 @@ if __name__ == '__main__':
 
             # print statistics
             running_loss += loss.item()
-            if i % 2 == 0:  # print every 2000 mini-batches
+            if i % 12 == 0:  # print for every 2 batches
                 print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 2))
+                      (epoch + 1, i + 1, running_loss / 12))
                 running_loss = 0.0
 
     print('Finished Training')
@@ -71,11 +72,14 @@ if __name__ == '__main__':
 
             outputs = net(feat)
 
+            # calculate total labels (should be 2000)
             total += labels.size(0)
 
+            # Convert sigmoid output in the format of the labels
             predicted = np.array(
                 [1 if x > 0 else 0 for x in outputs.flatten()])
 
+            # Convert array into the format of the labels tensor
             predicted = torch.tensor(predicted).to(dtype=torch.float64)
 
             # Convert the predicted outputs to
