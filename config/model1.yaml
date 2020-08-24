@@ -1,0 +1,9 @@
+MODEL:
+    'Name': 'something'
+    'params':
+        'p1':
+            'value': [1,2,3]
+            'tune' : False
+	    
+    
+
